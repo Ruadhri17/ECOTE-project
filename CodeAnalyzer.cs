@@ -6,13 +6,13 @@ namespace InheritanceTree
     {
         private string _fileName;
         private List<CppClass> _allClasses = new List<CppClass>();
-        public CodeAnalyzer(string fileName) 
+        public CodeAnalyzer(string fileName)
         {
             _fileName = fileName;
         }
-        public bool ParseFile() 
+        public bool ParseFile()
         {
-            try 
+            try
             {
                 if (!File.Exists(_fileName))
                 {
@@ -32,53 +32,99 @@ namespace InheritanceTree
                     Console.WriteLine(cppClass._className);
                 return true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Console.WriteLine("The process failed: {0}", e.ToString());
                 return false;
             }
-            
+
         }
-        private bool _HasClassSyntax(string lineToCheck) 
+        private bool _HasClassSyntax(string lineToCheck)
         {
             Regex classSyntax = new Regex(@"\s*class\s*(\w+)\s*\:?\s*(public|private|protected)?(\s*virtual)?\s*(\w+)", RegexOptions.IgnoreCase);
             if (classSyntax.IsMatch(lineToCheck))
                 return true;
-            return false; 
+            return false;
         }
         private void _ParseClass(string lineToParse)
         {
-            // split line, remove additional whitespaces and replace symbols ("{", "," and ";") that are useless in analizys.
-            string[] keywords = lineToParse.Replace("{", "").Replace(";", "").Replace(",","").Trim().Split(' ');
-            string className = keywords[1];
+            // split line, remove additional sybmols and words, leave only class names
+            List<string> keywords = lineToParse
+                                .Replace("{", "")
+                                .Replace(";", "")
+                                .Replace(",", "")
+                                .Replace("class", "")
+                                .Replace("virtual", "")
+                                .Replace("public", "")
+                                .Replace("protected", "")
+                                .Replace("private", "")
+                                .Trim().Split(' ').ToList();
+            string className = keywords.First();
+            keywords.RemoveAt(0);
             
-            if (keywords.Count() == 2)
+            // Case without inheritance
+            if (keywords.Count() == 0)
                 if (!_CheckIfClassExists(className))
                 {
-                    _allClasses.Add(new CppClass(className, null));
+                    _allClasses.Add(new CppClass(className));
                     return;
                 }
-            
-            string parentName = keywords[^1];
+
+            List<string> parentsNames = keywords;
             CppClass? parentClass = null;
             CppClass? newClass = null;
-            if (keywords.Count() > 6)
-
-            if (!_CheckIfClassExists(className))
-                if (!_CheckIfClassExists(parentName))
-                {
-                    parentClass = new CppClass(parentName, null);
-                    newClass = new CppClass(className, parentClass);
-                    parentClass.AddChild(newClass);
-                    _allClasses.Add(parentClass);
-                    _allClasses.Add(newClass);
-                }
+            
+            // Case with inheritnance and multiple inheritance
+            foreach (var parentName in parentsNames)
+            {
+                if(!_CheckIfClassExists(className))
+                    if (!_CheckIfClassExists(parentName))
+                    {
+                        // Both child and parent do not exist
+                        parentClass = new CppClass(parentName);
+                        newClass = new CppClass(className);
+                        newClass.AddParent(parentClass);
+                        parentClass.AddChild(newClass);
+                        _allClasses.Add(parentClass);
+                        _allClasses.Add(newClass);
+                    }
+                    else
+                    {
+                        // Child does not exists but parent does
+                        newClass = new CppClass(className);
+                        newClass.AddParent(_FindClass(parentName)!);
+                        _FindClass(parentName)!.AddChild(newClass);
+                        _allClasses.Add(newClass);
+                    }
                 else
-                {                
-                    newClass = new CppClass(className, _FindClass(parentName));
-                    _FindClass(parentName)!.AddChild(newClass);
-                    _allClasses.Add(newClass);
-                }    
+                    if (!_CheckIfClassExists(parentName))
+                    {
+                        // Child exists but parent does not
+                        parentClass = new CppClass(parentName);
+                        _FindClass(className)!.AddParent(parentClass);
+                        parentClass.AddChild(_FindClass(className)!);
+                        _allClasses.Add(parentClass);
+                    }
+            }
+                
+            /*if (keywords.Count() > 2)
+
+                if (!_CheckIfClassExists(className))
+                    if (!_CheckIfClassExists(parentName))
+                    {
+                        parentClass = new CppClass(parentName, null);
+                        newClass = new CppClass(className, parentClass);
+                        parentClass.AddChild(newClass);
+                        _allClasses.Add(parentClass);
+                        _allClasses.Add(newClass);
+                    }
+                    else
+                    {
+                        newClass = new CppClass(className, _FindClass(parentName));
+                        _FindClass(parentName)!.AddChild(newClass);
+                        _allClasses.Add(newClass);
+                    }
+            */
         }
         private bool _CheckIfClassExists(string className)
         {
@@ -98,5 +144,6 @@ namespace InheritanceTree
                     return cppClass;
             return null;
         }
+
     }
 }
