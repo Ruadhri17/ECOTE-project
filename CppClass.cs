@@ -3,11 +3,15 @@ namespace InheritanceTree
     public class CppClass
     {
         public string _className { get; private set; }
-        public List<CppClass> _parents = new List<CppClass>();
-        public List<CppClass> _children = new List<CppClass>();
+        private List<CppClass> _parents = new List<CppClass>();
+        private List<CppClass> _children = new List<CppClass>();
         public void AddChild(CppClass child)
         {
             _children.Add(child);
+        }
+        public void AddChildren(List<CppClass> children)
+        {
+            _children.AddRange(children);
         }
         public void AddParent(CppClass parent)
         {

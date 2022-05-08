@@ -17,4 +17,4 @@ CodeAnalyzer codeAnalyzer = new CodeAnalyzer(fileName);
 
 if (!codeAnalyzer.ParseFile())
     return;
-codeAnalyzer.printTree();
+codeAnalyzer.CreateTree();

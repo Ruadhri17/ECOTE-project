@@ -20,7 +20,6 @@ class Child : public virtual Base {
     }
 }
 
-
 class AnotherClass : public Base, public Base2 {
     float another_var;
 

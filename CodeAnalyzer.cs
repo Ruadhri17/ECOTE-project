@@ -134,19 +134,28 @@ namespace InheritanceTree
                     return cppClass;
             return null;
         }
-        public void printTree()
+        public void CreateTree()
         {
-            Console.WriteLine(_CheckNumberOfRoots());
+            CppClass dummyClass = new CppClass("Root");
+            dummyClass.AddChildren(_FindClassesWithNoParent());
+            _PrintTree(dummyClass, "", true);
         }
-        private int _CheckNumberOfRoots()
+        private List<CppClass> _FindClassesWithNoParent()
         {
-            int counter = 0;
+            List<CppClass> noParents = new List<CppClass>();
             foreach (var cppClass in _allClasses)
             {
                 if (cppClass.Parents.Count() == 0)
-                    counter++;
+                    noParents.Add(cppClass);
             }
-            return counter;
+            return noParents;
+        }
+        private static void _PrintTree(CppClass node, string indent, bool last)
+        {
+            Console.WriteLine(indent + "+- " + node._className);
+            indent += last ? "   " : "|  ";
+            for (int i = 0; i < node.Children.Count; i++)
+                _PrintTree(node.Children[i], indent, i == node.Children.Count - 1);
         }
     }
 }
