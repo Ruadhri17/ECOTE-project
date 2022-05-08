@@ -1,8 +1,11 @@
 class Base {
     int something;
 }
+class Base2 {
 
-class Child : public Child {
+}
+
+class Child : public virtual Base {
     private: 
     int test1;
     char test2;
@@ -17,7 +20,8 @@ class Child : public Child {
     }
 }
 
-class AnotherClass {
+
+class AnotherClass : public Base, public Base2 {
     float another_var;
 
 }

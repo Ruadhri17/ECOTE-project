@@ -14,4 +14,6 @@ while(true)
 Console.Clear();
 
 CodeAnalyzer codeAnalyzer = new CodeAnalyzer(fileName);
-codeAnalyzer.ParseFile();
+
+if (!codeAnalyzer.ParseFile())
+    return;
