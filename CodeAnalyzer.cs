@@ -28,8 +28,6 @@ namespace InheritanceTree
                             _ParseClass(currentLine);
                     }
                 }
-                foreach (var cppClass in _allClasses)
-                    Console.WriteLine(cppClass._className);
                 return true;
             }
             catch (Exception e)
@@ -53,12 +51,13 @@ namespace InheritanceTree
                                 .Replace("{", "")
                                 .Replace(";", "")
                                 .Replace(",", "")
+                                .Replace(":", "")
                                 .Replace("class", "")
                                 .Replace("virtual", "")
                                 .Replace("public", "")
                                 .Replace("protected", "")
                                 .Replace("private", "")
-                                .Trim().Split(' ').ToList();
+                                .Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
             string className = keywords.First();
             keywords.RemoveAt(0);
             
@@ -69,7 +68,6 @@ namespace InheritanceTree
                     _allClasses.Add(new CppClass(className));
                     return;
                 }
-
             List<string> parentsNames = keywords;
             CppClass? parentClass = null;
             CppClass? newClass = null;
@@ -77,7 +75,10 @@ namespace InheritanceTree
             // Case with inheritnance and multiple inheritance
             foreach (var parentName in parentsNames)
             {
+                parentClass = null;
+                newClass = null;
                 if(!_CheckIfClassExists(className))
+                {
                     if (!_CheckIfClassExists(parentName))
                     {
                         // Both child and parent do not exist
@@ -96,7 +97,9 @@ namespace InheritanceTree
                         _FindClass(parentName)!.AddChild(newClass);
                         _allClasses.Add(newClass);
                     }
+                }
                 else
+                {
                     if (!_CheckIfClassExists(parentName))
                     {
                         // Child exists but parent does not
@@ -105,26 +108,13 @@ namespace InheritanceTree
                         parentClass.AddChild(_FindClass(className)!);
                         _allClasses.Add(parentClass);
                     }
-            }
-                
-            /*if (keywords.Count() > 2)
-
-                if (!_CheckIfClassExists(className))
-                    if (!_CheckIfClassExists(parentName))
-                    {
-                        parentClass = new CppClass(parentName, null);
-                        newClass = new CppClass(className, parentClass);
-                        parentClass.AddChild(newClass);
-                        _allClasses.Add(parentClass);
-                        _allClasses.Add(newClass);
-                    }
                     else
                     {
-                        newClass = new CppClass(className, _FindClass(parentName));
-                        _FindClass(parentName)!.AddChild(newClass);
-                        _allClasses.Add(newClass);
+                        _FindClass(className)!.AddParent(_FindClass(parentName)!);
+                        _FindClass(parentName)!.AddChild(_FindClass(className)!);
                     }
-            */
+                }
+            }
         }
         private bool _CheckIfClassExists(string className)
         {
@@ -144,6 +134,19 @@ namespace InheritanceTree
                     return cppClass;
             return null;
         }
-
+        public void printTree()
+        {
+            Console.WriteLine(_CheckNumberOfRoots());
+        }
+        private int _CheckNumberOfRoots()
+        {
+            int counter = 0;
+            foreach (var cppClass in _allClasses)
+            {
+                if (cppClass.Parents.Count() == 0)
+                    counter++;
+            }
+            return counter;
+        }
     }
 }
