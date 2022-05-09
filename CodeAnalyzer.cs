@@ -49,6 +49,7 @@ namespace InheritanceTree
             // split line, remove additional sybmols and words, leave only class names
             List<string> keywords = lineToParse
                                 .Replace("{", "")
+                                .Replace("}", "")
                                 .Replace(";", "")
                                 .Replace(",", "")
                                 .Replace(":", "")
@@ -136,9 +137,19 @@ namespace InheritanceTree
         }
         public void CreateTree()
         {
-            CppClass dummyClass = new CppClass("Root");
-            dummyClass.AddChildren(_FindClassesWithNoParent());
-            _PrintTree(dummyClass, "", true);
+            if (_allClasses.Count() == 0)
+            {
+                Console.WriteLine("Given file has no classes!");
+                return;
+            }
+            if (_FindClassesWithNoParent().Count() == 1)
+                _PrintTree(_FindClassesWithNoParent().First(), "", true);
+            else
+            {
+                CppClass dummyClass = new CppClass("Root");
+                dummyClass.AddChildren(_FindClassesWithNoParent());
+                _PrintTree(dummyClass, "", true);
+            }
         }
         private List<CppClass> _FindClassesWithNoParent()
         {

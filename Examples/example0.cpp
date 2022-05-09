@@ -1,10 +1,6 @@
 class Base {
     int something;
 }
-class Base2 {
-
-}
-
 class Child : public virtual Base {
     private: 
     int test1;
@@ -18,6 +14,9 @@ class Child : public virtual Base {
         test1 = t1;
         test2 = t2;
     }
+}
+class Base2 {
+
 }
 
 class AnotherClass : public Base, public Base2 {

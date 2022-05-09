@@ -11,6 +11,7 @@ while(true)
     else
         Console.WriteLine("Input is empty or does not contain .cpp file!");
 }
+
 Console.Clear();
 
 CodeAnalyzer codeAnalyzer = new CodeAnalyzer(fileName);
