@@ -2,6 +2,7 @@
 
 String? fileName;
 
+// UI asking for file name
 while(true) 
 {
     Console.Write("Enter file name: ");
@@ -16,6 +17,8 @@ Console.Clear();
 
 CodeAnalyzer codeAnalyzer = new CodeAnalyzer(fileName);
 
+// leave the program if file parsing failed
 if (!codeAnalyzer.ParseFile())
     return;
+// printing tree
 codeAnalyzer.CreateTree();

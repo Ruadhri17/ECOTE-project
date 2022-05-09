@@ -5,6 +5,7 @@ namespace InheritanceTree
     public class CodeAnalyzer
     {
         private string _fileName;
+        //container for all classes in program
         private List<CppClass> _allClasses = new List<CppClass>();
         public CodeAnalyzer(string fileName)
         {
@@ -12,6 +13,7 @@ namespace InheritanceTree
         }
         public bool ParseFile()
         {
+            // open and read file using streamreader
             try
             {
                 if (!File.Exists(_fileName))
@@ -21,6 +23,7 @@ namespace InheritanceTree
                 }
                 using (StreamReader sr = new StreamReader(_fileName))
                 {
+                    // read line by line
                     while (sr.Peek() >= 0)
                     {
                         string? currentLine = sr.ReadLine();
@@ -39,6 +42,7 @@ namespace InheritanceTree
         }
         private bool _HasClassSyntax(string lineToCheck)
         {
+            // find all classes using regex
             Regex classSyntax = new Regex(@"\s*class\s*(\w+)\s*\:?\s*(public|private|protected)?(\s*virtual)?\s*(\w+)", RegexOptions.IgnoreCase);
             if (classSyntax.IsMatch(lineToCheck))
                 return true;
@@ -83,10 +87,13 @@ namespace InheritanceTree
                     if (!_CheckIfClassExists(parentName))
                     {
                         // Both child and parent do not exist
+                        // Create new instances of class
                         parentClass = new CppClass(parentName);
                         newClass = new CppClass(className);
+                        // fill information about parents and children
                         newClass.AddParent(parentClass);
                         parentClass.AddChild(newClass);
+                        // add both classes to class container
                         _allClasses.Add(parentClass);
                         _allClasses.Add(newClass);
                     }
@@ -94,8 +101,10 @@ namespace InheritanceTree
                     {
                         // Child does not exists but parent does
                         newClass = new CppClass(className);
+                        
                         newClass.AddParent(_FindClass(parentName)!);
                         _FindClass(parentName)!.AddChild(newClass);
+                        
                         _allClasses.Add(newClass);
                     }
                 }
@@ -105,12 +114,15 @@ namespace InheritanceTree
                     {
                         // Child exists but parent does not
                         parentClass = new CppClass(parentName);
+                        
                         _FindClass(className)!.AddParent(parentClass);
                         parentClass.AddChild(_FindClass(className)!);
+                        
                         _allClasses.Add(parentClass);
                     }
                     else
                     {
+                        // Both child and parent exist 
                         _FindClass(className)!.AddParent(_FindClass(parentName)!);
                         _FindClass(parentName)!.AddChild(_FindClass(className)!);
                     }
@@ -119,6 +131,7 @@ namespace InheritanceTree
         }
         private bool _CheckIfClassExists(string className)
         {
+            // check if class with given name was already created
             if (_allClasses.Count == 0)
                 return false;
             foreach (var cppClass in _allClasses)
@@ -130,6 +143,7 @@ namespace InheritanceTree
         }
         private CppClass? _FindClass(string className)
         {
+            // return class with given name
             foreach (var cppClass in _allClasses)
                 if (cppClass._className == className)
                     return cppClass;
@@ -137,15 +151,19 @@ namespace InheritanceTree
         }
         public void CreateTree()
         {
+            // file without classes
             if (_allClasses.Count() == 0)
             {
                 Console.WriteLine("Given file has no classes!");
                 return;
             }
+            
             if (_FindClassesWithNoParent().Count() == 1)
+                // case when there is only one class that has no parents
                 _PrintTree(_FindClassesWithNoParent().First(), "", true);
             else
             {
+                // case when there are multiple classes without parents
                 CppClass dummyClass = new CppClass("Root");
                 dummyClass.AddChildren(_FindClassesWithNoParent());
                 _PrintTree(dummyClass, "", true);
@@ -153,6 +171,7 @@ namespace InheritanceTree
         }
         private List<CppClass> _FindClassesWithNoParent()
         {
+            // function looks for classes that does not inherit from other classes
             List<CppClass> noParents = new List<CppClass>();
             foreach (var cppClass in _allClasses)
             {
@@ -163,6 +182,7 @@ namespace InheritanceTree
         }
         private static void _PrintTree(CppClass node, string indent, bool last)
         {
+            // console representation of tree (done recursively)
             Console.WriteLine(indent + "+- " + node._className);
             indent += last ? "   " : "|  ";
             for (int i = 0; i < node.Children.Count; i++)
