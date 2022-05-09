@@ -1,29 +1,56 @@
-class Base {
-    int something;
-}
-class Child : public virtual Base {
-    private: 
-    int test1;
-    char test2;
-    public:
-    Child() {
-        test1 = 0;
-        test2 = '';
+class Vehicle {
+  public:
+    Vehicle()
+    {
+      cout << "This is a Vehicle\n";
     }
-    Child(int t1, char t2) {
-        test1 = t1;
-        test2 = t2;
+};
+ 
+
+class FourWheeler {
+  public:
+    FourWheeler()
+    {
+      cout << "This is a 4 wheeler Vehicle\n";
     }
+};
+ 
+
+class Car : public Vehicle, public FourWheeler {
+ 
+};
+
+class A {
+
 }
-class Base2 {
+class B {
+
+}
+class C : public A, public B {
+
+}
+class D: public B { 
 
 }
 
-class AnotherClass : public Base, public Base2 {
-    float another_var;
+class Example1 {
+
+}
+class Example2 : private class Example1 {
+
+}
+class Example3 : protected class Example2 {
+
+}
+class Alone {
+
+}
+class AnotherAlone {
 
 }
 
 int main() {
+    
+    Car obj;
     return 0;
 }

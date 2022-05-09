@@ -5,7 +5,7 @@ String? fileName;
 // UI asking for file name
 while(true) 
 {
-    Console.Write("Enter file name: ");
+    Console.Write("Enter file name or file directory: ");
     fileName = Console.ReadLine();
     if(fileName != null && fileName.Contains(".cpp")) 
         break;
