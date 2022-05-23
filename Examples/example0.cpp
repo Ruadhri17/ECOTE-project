@@ -50,7 +50,7 @@ class AnotherAlone {
 }
 
 int main() {
-    
+     
     Car obj;
     return 0;
 }

@@ -196,7 +196,7 @@ namespace InheritanceTree
         }
         private static void _PrintTree(CppClass node, string indent, bool last)
         {
-            // console representation of tree (done recursively)
+            // console representation of tree (created recursively)
             Console.WriteLine(indent + "+- " + node._className);
             indent += last ? "   " : "|  ";
             for (int i = 0; i < node.Children.Count; i++)

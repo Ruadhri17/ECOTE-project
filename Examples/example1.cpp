@@ -3,7 +3,7 @@ using namespace std;
 
 class Root {
 
-    public:
+    public: 
     double length;
     double breadth;
     double height;
