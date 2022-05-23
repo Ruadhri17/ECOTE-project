@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-class root {
+class Root {
 
     public:
     double length;
@@ -9,31 +9,31 @@ class root {
     double height;
 };
 
-class child : root {
+class Child : root {
 
 }
 
-class childchild : virtual child {
+class ChildChild : virtual Child {
 
 
-class childchildchild : public virtual childchild {
-
-}
-
-class anotherRoot;
-
-class seconndchild : protected virtual root;
-
-
-class yetanotherRoot {
+class ChildChildChild : public virtual ChildChild {
 
 }
 
-class childchildsequel : private childchild {
+class AnotherRoot;
+
+class SecondChild : protected virtual Root;
+
+
+class YetAnotherRoot {
 
 }
 
-class childofsth : protected yetanotherRoot {
+class ChildChildSequel : private ChildChild {
+
+}
+
+class ChildOfSth : protected YetAnotherRoot {
     public:
     int sth;
 }

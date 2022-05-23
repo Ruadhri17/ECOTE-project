@@ -20,7 +20,7 @@ class Car : public Vehicle, public FourWheeler {
  
 };
 
-class A {
+class A : public C {
 
 }
 class B {
@@ -29,7 +29,7 @@ class B {
 class C : public A, public B {
 
 }
-class D: public B { 
+class D: public B, public A { 
 
 }
 

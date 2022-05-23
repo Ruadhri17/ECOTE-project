@@ -16,11 +16,6 @@ namespace InheritanceTree
             // open and read file using streamreader
             try
             {
-                if (!File.Exists(_fileName))
-                {
-                    Console.WriteLine("File does not exists!");
-                    return false;
-                }
                 using (StreamReader sr = new StreamReader(_fileName))
                 {
                     // read line by line
@@ -29,13 +24,23 @@ namespace InheritanceTree
                         string? currentLine = sr.ReadLine();
                         if (currentLine != null && _HasClassSyntax(currentLine))
                             _ParseClass(currentLine);
+                        if (_ValidateClasses())
+                        {
+                            Console.WriteLine("Error: {0} file is not compilable!", _fileName);
+                            return false;
+                        }          
                     }
                 }
                 return true;
             }
-            catch (Exception e)
+            catch (FileNotFoundException)
             {
-                Console.WriteLine("The process failed: {0}", e.ToString());
+                Console.Error.WriteLine(String.Format("Error: {0} file not found!", _fileName));
+                return false;
+            }
+            catch (Exception)
+            {
+                Console.Error.WriteLine(String.Format("Error: {0} file could not be processed!", _fileName));
                 return false;
             }
 
@@ -148,6 +153,15 @@ namespace InheritanceTree
                 if (cppClass._className == className)
                     return cppClass;
             return null;
+        }
+        private bool _ValidateClasses() 
+        {
+            foreach (var cppClass in _allClasses)
+            {
+                if (cppClass.Children.OrderBy(x => x._className).SequenceEqual(cppClass.Parents.OrderBy(x => x._className)))
+                    return false;
+            }
+            return true;
         }
         public void CreateTree()
         {
