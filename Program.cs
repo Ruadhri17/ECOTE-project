@@ -10,7 +10,11 @@ while(true)
     if(fileName != null && fileName.Contains(".cpp")) 
         break;
     else
+    {
+        Console.Clear();
         Console.WriteLine("Error: input is empty or does not contain .cpp file!");
+    }
+        
 }
 
 Console.Clear();

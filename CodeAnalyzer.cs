@@ -24,11 +24,11 @@ namespace InheritanceTree
                         string? currentLine = sr.ReadLine();
                         if (currentLine != null && _HasClassSyntax(currentLine))
                             _ParseClass(currentLine);
-                        if (_ValidateClasses())
+                        if (!_ValidateClasses())
                         {
                             Console.WriteLine("Error: {0} file is not compilable!", _fileName);
                             return false;
-                        }          
+                        }         
                     }
                 }
                 return true;
@@ -158,7 +158,20 @@ namespace InheritanceTree
         {
             foreach (var cppClass in _allClasses)
             {
-                if (cppClass.Children.OrderBy(x => x._className).SequenceEqual(cppClass.Parents.OrderBy(x => x._className)))
+                if (!_TraverseThroughChildren(cppClass._children, cppClass._className))
+                    return false;
+            }
+            return true;
+        }
+        private bool _TraverseThroughChildren(List<CppClass> children, string className)
+        {
+            if (children.Count == 0)
+                return true;
+            foreach (var child in children)
+            {
+                if (child._className == className)
+                    return false;
+                if (!_TraverseThroughChildren(child._children, className))
                     return false;
             }
             return true;

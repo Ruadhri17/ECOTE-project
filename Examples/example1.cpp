@@ -9,7 +9,7 @@ class Root {
     double height;
 };
 
-class Child : root {
+class Child : public ChildChildChild {
 
 }
 
@@ -17,6 +17,9 @@ class ChildChild : virtual Child {
 
 
 class ChildChildChild : public virtual ChildChild {
+
+}
+class ChildChildChildChild : public virtual ChildChildChild {
 
 }
 
