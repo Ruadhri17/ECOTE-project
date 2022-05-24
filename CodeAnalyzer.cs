@@ -158,12 +158,12 @@ namespace InheritanceTree
         {
             foreach (var cppClass in _allClasses)
             {
-                if (!_TraverseThroughChildren(cppClass._children, cppClass._className))
+                if (!_TraverseThroughChildren(cppClass.Children, cppClass._className))
                     return false;
             }
             return true;
         }
-        private bool _TraverseThroughChildren(List<CppClass> children, string className)
+        private bool _TraverseThroughChildren(IList<CppClass> children, string className)
         {
             if (children.Count == 0)
                 return true;
@@ -171,7 +171,7 @@ namespace InheritanceTree
             {
                 if (child._className == className)
                     return false;
-                if (!_TraverseThroughChildren(child._children, className))
+                if (!_TraverseThroughChildren(child.Children, className))
                     return false;
             }
             return true;
